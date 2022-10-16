@@ -23,6 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-__pycache__
-public
-*.json
+__pycache__/
+public/
