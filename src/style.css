@@ -1,0 +1,59 @@
+:root{
+	--color-a: #121212;
+	--color-b: #b3b3b3;
+	--color-c: #ff0000;
+}
+
+body {
+	background-color: var(--color-a);
+	color: var(--color-b);
+}
+
+.wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+
+/*843 x 322*/
+
+.search-area{
+	display: flex;
+	margin: 2em;
+	padding: 0.25em;
+	align-items: center;
+	justify-content: space-around;
+	border: 0 solid var(--color-b); /*border width, border style, border color*/
+	border-width: 0 0 2px 0;
+}
+
+/*
+.search-area:hover .hook,
+.search-area:hover ~ .hook {
+    background-color: var(--color-c);
+}*/
+
+.mag{
+	font-size: 20px;
+	-webkit-user-select: none; /* Safari */
+	-ms-user-select: none; /* IE 10+ */
+	user-select: none;
+	margin: 0em 0.2em 0em 0.1em;
+}
+
+input {
+	font-size: 20px;
+	border: 0;
+	color: var(--color-b);
+	background-color: var(--color-a);
+}
+
+input:focus{
+	outline: none;
+}
+
+#chart {
+  width: 843px;
+  height: 322px;
+}
