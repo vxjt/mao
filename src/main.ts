@@ -83,6 +83,8 @@ function bigsearch(event: KeyboardEvent) {
   }
 }
 
+//wip, spaghetti first
+
 function drawchart(data: Cdata) {
   
   scene.clear()
@@ -140,8 +142,10 @@ function drawchart(data: Cdata) {
   let chartcoords = new Vector4()
 
   let dateaxis = new Vector4()
+  let yaxis = new Vector4()
 
   let xentries
+  let yentries
 
   minxdategeo.computeBoundingBox()
   maxxdategeo.computeBoundingBox()
@@ -186,16 +190,21 @@ function drawchart(data: Cdata) {
 
   }
 
-  if (maxxdategeo.boundingBox && maxy2geo.boundingBox && minxdategeo.boundingBox) {
+  if (maxxdategeo.boundingBox && maxy2geo.boundingBox && minxdategeo.boundingBox && charttitlegeo.boundingBox && miny2geo.boundingBox) {
     
     dateaxis.x = maxy2geo.boundingBox.max.x + drawsettings.margin * 2 + (minxdategeo.boundingBox.max.x - minxdategeo.boundingBox.min.x) / 2
     dateaxis.z = canvaswidth - drawsettings.margin - (maxxdategeo.boundingBox.max.x - maxxdategeo.boundingBox.min.x) / 2
+    yaxis.y = maxxdategeo.boundingBox.max.y + drawsettings.margin * 2 + maxy2geo.boundingBox.max.y
+    yaxis.w = canvasheight - drawsettings.margin - charttitlegeo.boundingBox.max.y
     xentries = Math.floor((dateaxis.z - dateaxis.x) / (Math.max(minxdategeo.boundingBox.max.x, maxxdategeo.boundingBox.max.x) + drawsettings.margin * 5))
+    yentries = Math.floor((yaxis.w - yaxis.y) / (Math.max(maxy2geo.boundingBox.max.y, miny2geo.boundingBox.max.y) + drawsettings.margin * 4))
   }
 
   dateaxis.y = drawsettings.margin
   dateaxis.w = drawsettings.margin
-  
+  yaxis.x = drawsettings.margin
+  yaxis.z = drawsettings.margin
+
   minxmesh.position.y = drawsettings.margin
   maxxmesh.position.y = drawsettings.margin
   maxy2mesh.position.x = drawsettings.margin
@@ -213,8 +222,12 @@ function drawchart(data: Cdata) {
 
   let chartline = new Line(chartbg, linemat)
 
-  if (!xentries) {
+  if (!xentries ) {
     xentries = 0
+  }
+
+  if (!yentries) {
+    yentries = 0
   }
 
   
@@ -225,8 +238,6 @@ function drawchart(data: Cdata) {
   scene.add(miny2mesh)
 
   scene.add(charttitlemesh)
-
-  //boxall(scene)
 
   scene.add(chartline);
 
@@ -253,13 +264,29 @@ function drawchart(data: Cdata) {
     }
 
     scene.add(curmesh)
-    //debugsquare(new Vector4(midx, 0, midx, 20), scene)
 
   }
 
-  //debugsquare(chartcoords, scene)
-  //debugsquare(new Vector4(0, 0, canvaswidth, canvasheight), scene)
-  //debugsquare(dateaxis, scene)
+  for (let n = yentries; n > 0; n--) {
+    let progressy = n / (yentries + 1)
+    let midy = progressy * (yaxis.w - yaxis.y) + yaxis.y
+    let cury = progressy * (maxy2 - miny2) + miny2
+
+    let curyshape = font.generateShapes(cury.toLocaleString(), 10)
+
+    let curygeo = new ShapeGeometry(curyshape)
+
+    let curymesh = new Mesh(curygeo, textmat)
+
+    curygeo.computeBoundingBox()
+    
+    if(curygeo.boundingBox) {
+      curymesh.position.y = midy - (curygeo.boundingBox.max.y - curygeo.boundingBox.min.y) / 2
+      curymesh.position.x = drawsettings.margin
+    }
+
+    scene.add(curymesh)
+  }
 }
 
 function ceil2(n: number, d: number) {
