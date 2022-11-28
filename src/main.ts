@@ -6,7 +6,7 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 
 import threehelv from './helvetiker_bold.typeface.json';
 
-import { maketestdata, boxall, debugsquare } from './test'
+import { maketestdata} from './test'
 
 export type Cdata = {
   entityName: string
@@ -74,12 +74,13 @@ function onWindowResize() {
 function bigsearch(event: KeyboardEvent) {
   if (event.key == "Enter") {
     drawchart(maketestdata())
-    /*
-    let queryurl = `/cf/${event.target.value}`
-    fetch(queryurl)
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      */
+    let val = (event.target as HTMLInputElement).value
+    if(val.length > 3) {
+      console.log(val)
+      fetch(`/cf/${val}`)
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+    }
   }
 }
 
@@ -196,8 +197,8 @@ function drawchart(data: Cdata) {
     dateaxis.z = canvaswidth - drawsettings.margin - (maxxdategeo.boundingBox.max.x - maxxdategeo.boundingBox.min.x) / 2
     yaxis.y = maxxdategeo.boundingBox.max.y + drawsettings.margin * 2 + maxy2geo.boundingBox.max.y
     yaxis.w = canvasheight - drawsettings.margin - charttitlegeo.boundingBox.max.y
-    xentries = Math.floor((dateaxis.z - dateaxis.x) / (Math.max(minxdategeo.boundingBox.max.x, maxxdategeo.boundingBox.max.x) + drawsettings.margin * 5))
-    yentries = Math.floor((yaxis.w - yaxis.y) / (Math.max(maxy2geo.boundingBox.max.y, miny2geo.boundingBox.max.y) + drawsettings.margin * 4))
+    xentries = Math.floor((dateaxis.z - dateaxis.x) / (Math.max(minxdategeo.boundingBox.max.x, maxxdategeo.boundingBox.max.x) + drawsettings.margin * 6))
+    yentries = Math.floor((yaxis.w - yaxis.y) / (Math.max(maxy2geo.boundingBox.max.y, miny2geo.boundingBox.max.y) + drawsettings.margin * 5))
   }
 
   dateaxis.y = drawsettings.margin
@@ -314,8 +315,3 @@ function resizeCanvasToDisplaySize() {
   camera.updateProjectionMatrix(); //updates camera settings
   renderer.setSize(canvaswidth, canvasheight);
 }
-
-//-128 to 127 Int8Array
-//-32,768 to 32,767 Iint16Array
-//-2,147,483,648 to 2,147,483,647 Int32Array
-//-9,223,372,036,854,775,808 to 9,223,372,036,854,775,807 BigInt64Array
